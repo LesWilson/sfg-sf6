@@ -33,9 +33,8 @@ public class ExceptionHandlerController {
     public ResponseEntity<List<ErrorInfo>> handleDatabaseViolations(TransactionSystemException ex) {
         ResponseEntity.BodyBuilder builder = ResponseEntity.badRequest();
         List<ErrorInfo> errors = new ArrayList<>();
-        Throwable cause = ex.getCause().getCause();
-        if(cause instanceof ConstraintViolationException) {
-            Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) cause).getConstraintViolations();
+        if(ex.getCause().getCause() instanceof ConstraintViolationException cause) {
+            Set<ConstraintViolation<?>> constraintViolations = cause.getConstraintViolations();
             errors = constraintViolations.stream()
                     .map(cv ->
                             ErrorInfo.builder()

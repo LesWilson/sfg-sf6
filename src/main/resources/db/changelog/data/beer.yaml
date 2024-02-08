@@ -1,0 +1,22 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 20231220-player-data-insert
+      author: leswilson
+      changes:
+        - insert:
+            tableName:  player
+            schemaName: golf
+            columns:
+              - column:
+                  name: id
+                  value: '8d1208fc-f401-496c-0001-483fef121234'
+              - column:
+                  name:  first_name
+                  value:  'Admin'
+              - column:
+                  name:  last_name
+                  value:  'player'
+              - column:
+                  name:  email
+                  value:  'lesjameswilson@gmail.com'

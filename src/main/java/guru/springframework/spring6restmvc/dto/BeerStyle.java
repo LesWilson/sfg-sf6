@@ -4,5 +4,6 @@ public enum BeerStyle {
     LAGER,
     PALE_ALE,
     IPA,
-    STOUT
+    STOUT,
+    CIDER
 }

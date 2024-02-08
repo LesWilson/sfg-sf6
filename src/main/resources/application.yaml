@@ -2,3 +2,26 @@
 #  level:
 #    guru:
 #      springframework: debug
+spring:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    schema: guru6
+    password:
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-main.yaml
+    default-schema: guru6
+    database-change-log-lock-table: guru6-db-change-log-lock
+    database-change-log-table: guru6-db-change-log
+    liquibase-schema: public
+#  sql:
+#    init:
+#      schema-locations: golf
+
+  main:
+    log-startup-info: true
+  jpa:
+    show-sql: true
+server:
+  port: 8081

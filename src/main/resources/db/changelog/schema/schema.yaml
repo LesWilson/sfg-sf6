@@ -1,0 +1,8 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: schema-guru6-create
+      author: leswilson
+      changes:
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS guru6;

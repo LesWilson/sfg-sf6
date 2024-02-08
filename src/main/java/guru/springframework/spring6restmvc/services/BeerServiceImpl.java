@@ -1,11 +1,20 @@
 package guru.springframework.spring6restmvc.services;
 
+import guru.springframework.spring6restmvc.dto.BeerDTO;
+import guru.springframework.spring6restmvc.dto.SearchDTO;
 import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.mappers.BeerMapper;
-import guru.springframework.spring6restmvc.dto.BeerDTO;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
-import lombok.RequiredArgsConstructor;
+import guru.springframework.spring6restmvc.repositories.BeerSpecifications;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,12 +25,20 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class BeerServiceImpl implements BeerService {
 
     private final BeerRepository repository;
     private final BeerMapper mapper;
+    private final EntityManager entityManager;
+    private CriteriaBuilder criteriaBuilder;
+
+    public BeerServiceImpl(BeerRepository repository, BeerMapper mapper, EntityManager entityManager) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.entityManager = entityManager;
+        this.criteriaBuilder = entityManager.getCriteriaBuilder();
+    }
 
     @Override
     public List<BeerDTO> listBeers() {
@@ -29,6 +46,66 @@ public class BeerServiceImpl implements BeerService {
                 .stream()
                 .map(mapper::modelToDto)
                 .toList();
+    }
+
+    @Override
+    public Page<BeerDTO> findBeers(SearchDTO searchDTO, Pageable pageable) {
+        Specification<Beer> spec = Specification.where(null);
+        if(CollectionUtils.isNotEmpty(searchDTO.getBeerStyles())) {
+            spec = spec.and(BeerSpecifications.hasBeerStyle(searchDTO.getBeerStyles()));
+        }
+        if(StringUtils.isNotEmpty(searchDTO.getBeerName())) {
+            spec = spec.and(BeerSpecifications.hasBeerNameLike(searchDTO.getBeerName()));
+        }
+        return repository.findAll(spec, pageable).map(mapper::modelToDto);
+
+    }
+    @Override
+    public List<BeerDTO> search(SearchDTO searchDTO) {
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<Beer> criteriaQuery = criteriaBuilder.createQuery(Beer.class);
+//        Root<Beer> beer = criteriaQuery.from(Beer.class);
+//        criteriaQuery.where(criteriaBuilder.like(beer.get("beerName"), searchDTO.getBeerName()));
+//        final List<String> styles = searchDTO.getBeerStyles().stream().map(BeerStyle::ordinal).map(String::valueOf).toList();
+//        criteriaQuery.where(criteriaBuilder.in(beer.get("beerStyle")).value(styles));
+//
+////        criteriaBuilder.in(employee.get("firstName")).value("Bob").value("Fred").value("Joe")
+////        employee.get("firstName").in("Bob", "Fred", "Joe")
+////        employee.get("firstName").in(criteriaBuilder.parameter(List.class, "names")
+//
+//        Query query = entityManager.createQuery(criteriaQuery);
+//        List<Beer> result = query.getResultList();
+
+//        criteriaBuilder.and(
+//        criteriaBuilder.equal(employee.get("firstName"), "Bob"),
+//        criteriaBuilder.equal(employee.get("lastName"), "Smith")
+//        )
+
+        CriteriaQuery<Beer> criteriaQuery = criteriaBuilder.createQuery(Beer.class);
+        Root<Beer> root = criteriaQuery.from(Beer.class);
+        final CriteriaQuery<Beer> select = criteriaQuery.select(root);
+        List<Order> orderBys = List.of(criteriaBuilder.asc(root.get("beerStyle")), criteriaBuilder.desc(root.get("beerName")));
+        Predicate queryPredicate = null;
+        if(CollectionUtils.isNotEmpty(searchDTO.getBeerStyles())) {
+            queryPredicate = root.get("beerStyle").in(searchDTO.getBeerStyles());
+        }
+
+        if(StringUtils.isNotEmpty(searchDTO.getBeerName())) {
+            Predicate beerNamePredicate = criteriaBuilder.like(root.get("beerName"), "%" + searchDTO.getBeerName() + "%");
+            if(queryPredicate != null) {
+                queryPredicate = criteriaBuilder.and(queryPredicate, beerNamePredicate);
+            } else {
+                queryPredicate = beerNamePredicate;
+            }
+        }
+        select.where(queryPredicate).orderBy(orderBys);
+
+        TypedQuery<Beer> query = entityManager.createQuery(select);
+        return query.getResultList()
+                .stream()
+                .map(mapper::modelToDto)
+                .toList();
+
     }
 
     @Override

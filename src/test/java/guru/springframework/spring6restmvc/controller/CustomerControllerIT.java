@@ -8,15 +8,12 @@ import guru.springframework.spring6restmvc.repositories.CustomerRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.URI;
 import java.util.List;
@@ -96,9 +93,9 @@ class CustomerControllerIT {
         Customer customer = byId.get();
         assertThat(customer.getName(), is(equalTo(dto.getName())));
         assertThat(customer.getVersion(), is(equalTo(0)));
-        assertThat(customer.getCreatedDate(), is(notNullValue()));
+        assertThat(customer.getCreateDate(), is(notNullValue()));
         assertThat(customer.getUpdateDate(), is(notNullValue()));
-        assertThat(customer.getUpdateDate(), is(equalTo(customer.getCreatedDate())));
+        assertThat(customer.getUpdateDate(), is(equalTo(customer.getCreateDate())));
     }
 
     @Test
@@ -116,9 +113,9 @@ class CustomerControllerIT {
         Customer customer = byId.get();
         assertThat(customer.getName(), is(equalTo(dto.getName())));
         assertThat(customer.getVersion(), is(equalTo(dto.getVersion() + 1)));
-        assertThat(customer.getCreatedDate(), is(equalTo(dto.getCreatedDate())));
+        assertThat(customer.getCreateDate(), is(equalTo(dto.getCreatedDate())));
         assertThat(customer.getUpdateDate(), is(notNullValue()));
-        assertThat(customer.getUpdateDate(), is(not(equalTo(customer.getCreatedDate()))));
+        assertThat(customer.getUpdateDate(), is(not(equalTo(customer.getCreateDate()))));
     }
 
     @Transactional
@@ -136,9 +133,9 @@ class CustomerControllerIT {
         Customer customer = byId.get();
         assertThat(customer.getName(), is(equalTo(dto.getName())));
         assertThat(customer.getVersion(), is(equalTo(dto.getVersion() + 1)));
-        assertThat(customer.getCreatedDate(), is(equalTo(dto.getCreatedDate())));
+        assertThat(customer.getCreateDate(), is(equalTo(dto.getCreatedDate())));
         assertThat(customer.getUpdateDate(), is(notNullValue()));
-        assertThat(customer.getUpdateDate(), is(not(equalTo(customer.getCreatedDate()))));
+        assertThat(customer.getUpdateDate(), is(not(equalTo(customer.getCreateDate()))));
     }
 
     @Test

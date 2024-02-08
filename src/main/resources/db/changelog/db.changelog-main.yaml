@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/schema/schema.yaml
+  - include:
+      file: db/changelog/tables/beer.yaml
+  - include:
+      file: db/changelog/tables/customer.yaml
+#  - include:
+#      file: db/changelog/data/beer.yaml

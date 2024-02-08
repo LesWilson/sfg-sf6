@@ -1,0 +1,52 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: table-customer-create
+      author: leswilson
+      changes:
+        - preConditions:
+            - not:
+                - tableExists:
+                    tableName: customer
+            - onFail: MARK_RAN
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    constraintName: pk_customer
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: ui_customer_name
+              - column:
+                  name: version
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 1
+              - column:
+                  name: create_date
+                  type: datetime
+                  defaultValueComputed: current_datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_user
+                  type: varchar(200)
+              - column:
+                  name: update_date
+                  type: datetime
+                  defaultValueComputed: current_datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update_user
+                  type: varchar(200)

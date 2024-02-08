@@ -9,7 +9,7 @@ public abstract class MapperDecoratorBase {
         if(model != null) {
             dto.setId(model.getId());
             dto.setVersion(model.getVersion());
-            dto.setCreatedDate(model.getCreatedDate());
+            dto.setCreatedDate(model.getCreateDate());
             dto.setUpdateDate(model.getUpdateDate());
         }
         return dto;
@@ -19,7 +19,7 @@ public abstract class MapperDecoratorBase {
         if(dto != null) {
             model.setId(dto.getId());
             model.setVersion(dto.getVersion());
-            model.setCreatedDate(dto.getCreatedDate());
+            model.setCreateDate(dto.getCreatedDate());
             model.setUpdateDate(dto.getUpdateDate());
         }
         return model;

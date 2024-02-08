@@ -96,7 +96,7 @@ class BeerControllerIT {
         Beer beer = byId.get();
         assertThat(beer.getBeerName(), is(equalTo(dto.getBeerName())));
         assertThat(beer.getVersion(), is(equalTo(0)));
-        assertThat(beer.getCreatedDate(), is(notNullValue()));
+        assertThat(beer.getCreateDate(), is(notNullValue()));
         assertThat(beer.getUpc(), is(equalTo(dto.getUpc())));
         assertThat(repository.findAll(), hasSize(4));
     }
@@ -115,7 +115,7 @@ class BeerControllerIT {
         assertThat(beer.getBeerName(), is(equalTo(beerDTO.getBeerName())));
         assertThat(beer.getVersion(), is(beerDTO.getVersion()+1));
         assertThat(beer.getUpdateDate(), is(not(equalTo(beerDTO.getUpdateDate()))));
-        assertThat(beer.getCreatedDate(), is(equalTo(beerDTO.getCreatedDate())));
+        assertThat(beer.getCreateDate(), is(equalTo(beerDTO.getCreatedDate())));
     }
 
     @Test
@@ -138,7 +138,7 @@ class BeerControllerIT {
         assertThat(beer.getBeerName(), is(equalTo(dto.getBeerName())));
         assertThat(beer.getQuantityOnHand(), is(equalTo(dto.getQuantityOnHand())));
         assertThat(beer.getVersion(), is(dto.getVersion()+1));
-        assertThat(beer.getCreatedDate(), is(equalTo(dto.getCreatedDate())));
+        assertThat(beer.getCreateDate(), is(equalTo(dto.getCreatedDate())));
         assertThat(beer.getUpdateDate(), is(not(equalTo(dto.getUpdateDate()))));
     }
 

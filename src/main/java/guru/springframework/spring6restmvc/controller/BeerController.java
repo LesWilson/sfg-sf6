@@ -1,10 +1,13 @@
 package guru.springframework.spring6restmvc.controller;
 
+import guru.springframework.spring6restmvc.dto.SearchDTO;
 import guru.springframework.spring6restmvc.exception.NotFoundException;
 import guru.springframework.spring6restmvc.dto.BeerDTO;
 import guru.springframework.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,7 @@ public class BeerController {
 
     public static final String BEER_PATH = "/api/v1/beer";
     public static final String BEER_PATH_WITH_ID = BEER_PATH + "/{id}";
+    public static final String BEER_PATH_SEARCH = BEER_PATH + "/search";
     private final BeerService beerService;
 
     @DeleteMapping(BEER_PATH_WITH_ID)
@@ -64,6 +68,18 @@ public class BeerController {
     public BeerDTO getBeerById(@PathVariable("id") UUID id) {
         log.info("in beer controller with id: {}", id);
         return beerService.getBeerById(id).orElseThrow(NotFoundException::new);
+    }
+
+//    @PostMapping(BEER_PATH_SEARCH)
+//    public List<BeerDTO> search(@RequestBody SearchDTO searchDTO) {
+//        log.info("search:{}", searchDTO);
+//        return beerService.search(searchDTO);
+//    }
+
+    @PostMapping(BEER_PATH_SEARCH)
+    public Page<BeerDTO> pageable(@RequestBody SearchDTO searchDTO) {
+        log.info("search:{}", searchDTO);
+        return beerService.findBeers(searchDTO, PageRequest.of(0, 2));
     }
 
 }

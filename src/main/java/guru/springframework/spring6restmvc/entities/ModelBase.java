@@ -17,13 +17,15 @@ public class ModelBase {
     private UUID id;
     @Version
     private Integer version;
-    private LocalDateTime createdDate;
+    private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    private String createUser;
+    private String lastUpdateUser;
 
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
-        createdDate = now;
+        createDate = now;
         updateDate = now;
     }
 

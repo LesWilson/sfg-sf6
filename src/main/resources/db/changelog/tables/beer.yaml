@@ -1,0 +1,71 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: table-beer-create
+      author: leswilson
+      changes:
+        - preConditions:
+            - not:
+                - tableExists:
+                    tableName: beer
+            - onFail: MARK_RAN
+        - createTable:
+            tableName: beer
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    constraintName: pk_beer
+                    primaryKey: true
+              - column:
+                  name: beer_name
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: beer_style
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: upc
+                  type: varchar(400)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: ui_beer_upc
+              - column:
+                  name: quantity_on_hand
+                  type: int
+                  defaultValue: 0
+              - column:
+                  name: price
+                  type: double
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 1
+              - column:
+                  name: create_date
+                  type: datetime
+                  defaultValueComputed: current_datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_user
+                  type: varchar(200)
+              - column:
+                  name: update_date
+                  type: datetime
+                  defaultValueComputed: current_datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update_user
+                  type: varchar(200)
